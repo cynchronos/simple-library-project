@@ -47,7 +47,11 @@ export class AccountController {
     @Param('username') username: string,
   ): Promise<object> {
     try {
-      const account = await this.accountService.findAccountByUsername(username);
+      const account: object = await this.accountService.findAccountByUsername(
+        username,
+      );
+
+      delete account['dataValues']['password'];
 
       return {
         code: 200,
@@ -86,12 +90,13 @@ export class AccountController {
     @Body() updatePasswordDto: UpdatePasswordDto,
   ): Promise<object> {
     try {
-      const account = await this.accountValidation.updatePasswordValidation(
-        id,
-        updatePasswordDto,
-      );
+      const account: object =
+        await this.accountValidation.updatePasswordValidation(
+          id,
+          updatePasswordDto,
+        );
 
-      await this.accountService.updatePassword(account);
+      await this.accountService.updatePassword(account['dataValues']);
 
       return {
         code: 200,
@@ -105,7 +110,10 @@ export class AccountController {
   @Delete(':id')
   async deleteAccount(@Param('id') id: string): Promise<object> {
     try {
-      const userData: any = await this.accountService.destroyAccount(id);
+      const accountId: string =
+        await this.accountValidation.destroyAccountValidation(id);
+
+      const userData: any = await this.accountService.destroyAccount(accountId);
 
       await this.userService.destroyUser(userData.user_id);
 

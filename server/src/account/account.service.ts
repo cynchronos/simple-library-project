@@ -56,7 +56,7 @@ export class AccountService {
           as: 'user',
         },
         attributes: {
-          exclude: ['password', 'createdAt', 'updatedAt'],
+          exclude: ['createdAt', 'updatedAt'],
         },
       });
 

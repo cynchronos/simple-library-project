@@ -12,12 +12,7 @@ ConfigModule.forRoot();
 @Module({
   imports: [UserModule],
   controllers: [AccountController],
-  providers: [
-    AccountService,
-    ...accountProviders,
-    ...userProviders,
-    AccountValidation,
-  ],
-  exports: [AccountService],
+  providers: [AccountService, ...accountProviders, AccountValidation],
+  exports: [AccountService, ...accountProviders, AccountValidation],
 })
 export class AccountModule {}

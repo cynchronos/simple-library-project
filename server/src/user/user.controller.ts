@@ -12,10 +12,14 @@ import { UserService } from './user.service';
 import { UserFindDto } from './dto/user-find-query.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserValidation } from './user.validation';
 
 @Controller('api/user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private readonly userValidation: UserValidation,
+  ) {}
 
   @Get()
   public async fetchAllUsers(@Query() input: UserFindDto): Promise<object> {
@@ -52,7 +56,11 @@ export class UserController {
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto): Promise<object> {
     try {
-      await this.userService.createUser(createUserDto);
+      const userData = await this.userValidation.validateCreateUser(
+        createUserDto,
+      );
+
+      await this.userService.createUser(userData);
 
       return {
         code: 200,
@@ -69,7 +77,12 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<object> {
     try {
-      await this.userService.updateUser(user_id, updateUserDto);
+      const userData = await this.userValidation.validateUpdateUser(
+        user_id,
+        updateUserDto,
+      );
+
+      await this.userService.updateUser(user_id, userData);
 
       return {
         code: 200,
@@ -83,7 +96,9 @@ export class UserController {
   @Delete(':user_id')
   async deleteUser(@Param('user_id') user_id: number): Promise<object> {
     try {
-      await this.userService.destroyUser(user_id);
+      const userId = await this.userValidation.validateDestroyUser(user_id);
+
+      await this.userService.destroyUser(userId);
 
       return {
         code: 200,

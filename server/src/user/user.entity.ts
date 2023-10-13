@@ -15,7 +15,7 @@ export class User extends Model {
   @PrimaryKey
   @AllowNull(false)
   @Column(DataType.STRING)
-  user_id: string;
+  user_id: number;
 
   @AllowNull(false)
   @Column(DataType.STRING)

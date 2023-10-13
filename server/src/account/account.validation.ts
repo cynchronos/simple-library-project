@@ -13,7 +13,10 @@ export class AccountValidation {
     private userModel: typeof User,
   ) {}
 
-  public async createAccountValidation(account: any): Promise<object> {
+  public async createAccountValidation(
+    account: any,
+    newUser?: object,
+  ): Promise<object> {
     try {
       const usernameData = await this.accountModel.findOne<Account>({
         where: {
@@ -49,7 +52,7 @@ export class AccountValidation {
         throw error;
       }
 
-      if (!userData) {
+      if (!userData && !newUser) {
         const error: any = new Error();
         error.errorCode = 409;
         error.errorInfo = 'User tidak ditemukan';
@@ -134,7 +137,7 @@ export class AccountValidation {
     }
   }
 
-  public async destroyAccount(id: string): Promise<object> {
+  public async destroyAccountValidation(id: string): Promise<string> {
     try {
       const account: Account = await this.accountModel.findOne<Account>({
         where: {
@@ -150,11 +153,7 @@ export class AccountValidation {
         throw error;
       }
 
-      await account.destroy();
-
-      return {
-        user_id: account.user_id,
-      };
+      return account.dataValues.user_id;
     } catch (error) {
       throw {
         code: error.errorCode || 400,

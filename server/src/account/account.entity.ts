@@ -31,7 +31,7 @@ export class Account extends Model {
   @ForeignKey(() => User)
   @AllowNull(false)
   @Column(DataType.STRING)
-  user_id: string;
+  user_id: number;
 
   @ForeignKey(() => UserRole)
   @AllowNull(false)
